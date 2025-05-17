@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notion Style Portfolio - Utej Avulla</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f6f3;
+      --text: #1a1a1a;
+      --card: #ffffff;
+      --border: #e0e0e0;
+      --link: #3b5bdb;
+    }
+
+    body.dark {
+      --bg: #1e1e1e;
+      --text: #ffffff;
+      --card: #2a2a2a;
+      --border: #444;
+      --link: #8cabff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none; /* prevent text selection cursor on nav */
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    aside {
+      width: 250px;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      position: fixed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: background 0.2s;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .nav-link:hover {
+      background: var(--border);
+    }
+
+    .theme-toggle {
+      margin-top: 40px;
+      padding: 6px 12px;
+      border: 1px solid var(--text);
+      border-radius: 6px;
+      background: none;
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    main {
+      margin-left: 250px;
+      padding: 40px;
+      width: 100%;
+    }
+
+    .banner {
+      width: 100%;
+      height: 200px;
+      background: url('https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .page-title img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    section h2 {
+      font-size: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+      margin-bottom: 16px;
+    }
+
+    section p {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* Pages */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(8px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* Projects grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .project-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+      display: flex;
+      flex-direction: column;
+      height: 380px; /* fixed height */
+      transition: transform 0.3s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 20px rgb(0 0 0 / 0.15);
+    }
+
+    .project-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .project-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .project-desc {
+      font-size: 14px;
+      line-height: 1.4;
+      overflow: hidden;
+      flex-grow: 1; /* fill remaining space */
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+    }
+
+    /* Skills two columns */
+    .skills-container {
+      display: flex;
+      gap: 40px;
+      max-width: 700px;
+      flex-wrap: wrap;
+    }
+
+    .skill-col {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .skill-col h3 {
+      margin-bottom: 12px;
+      font-weight: 600;
+      font-size: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    .skill-list {
+      list-style: none;
+      padding-left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    
+    .skill-list li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+    }
+
+    .skill-icon {
+      width: 20px;
+      height: 20px;
+      filter: var(--icon-filter, none);
+    }
+
+    /* Stats profiles */
+    .profiles-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .profiles-button {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s;
+    }
+    .theme-switch-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border);
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 3px;
+  background-color: var(--text);
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--text);
+}
+
+input:checked + .slider::before {
+  transform: translateX(24px);
+  background-color: var(--bg);
+}
+
+
+.theme-toggle:hover {
+  background: var(--border);
+}
+
+
+    .profiles-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      background: rgba(0, 0, 0, 0.12);
+    }
+
+    /* Icons SVG filters for dark mode */
+    body.dark .skill-icon,
+    body.dark .stat-card img {
+      filter: invert(1) brightness(1.2);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      aside {
+        display: none;
+      }
+      main {
+        margin-left: 0;
+        padding: 20px;
+      }
+      .skills-container {
+        flex-direction: column;
+      }
+      .stats-grid {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <span class="nav-link" onclick="showPage('about')">📘 About</span>
+    <span class="nav-link" onclick="showPage('projects')">🛠️ Projects</span>
+    <span class="nav-link" onclick="showPage('skills')">🧠 Skills</span>
+    <span class="nav-link" onclick="showPage('profiles')">📊 Profiles</span>
+    <span class="nav-link" onclick="showPage('contact')">📬 Contact</span>
+    <div style="display: flex; justify-content: center;">
+    <div class="theme-switch-wrapper">
+  <label class="theme-switch">
+    <input type="checkbox" id="theme-toggle" onclick="toggleTheme()">
+    <span class="slider"></span>
+  </label>
+</div>
+
+  </div>
+
+  </aside>
+
+  <main>
+    <div class="banner"></div>
+    <div class="page-title">
+      <img src="https://avatars.githubusercontent.com/u/9919?s=200&v=4" alt="icon" />
+      Utej Avulla
+    </div>
+
+    <section id="about" class="page active">
+      <h2>About</h2>
+      <p>
+        I'm an Electronics and Communication Engineering student from Hyderabad, currently in my 3rd year. 
+        Through my core, I've learned electronics fundamentals and tools like Xilinx Vivado, MATLAB, Cadence, and more.
+        Though my main interest is software, especially experimenting with new stacks and technologies. 
+        I love learning Data Structures & Algorithms and always seek unique things to explore.
+        This portfolio reflects my blend of hardware knowledge and software passion.
+      </p>
+      <h6>**this website is only for desktop view</h6>
+    </section>
+
+    <section id="projects" class="page">
+      <h2>Projects</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <img src="Images\Screenshot 2025-05-17 194301.png" alt="Realtime ASCII Art Camera" />
+          <div class="project-title">Realtime ASCII Art Camera</div>
+          <div class="project-desc">
+            This fun project captures live video from a camera and converts it to ASCII art on the fly.
+            It merges creativity with programming, creating a unique visual experience in terminal or GUI.
+            A great way to explore image processing and character rendering techniques.
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="  " alt="Air Quality Monitoring System" />
+          <div class="project-title">Air Quality Monitoring System</div>
+          <div class="project-desc">
+            Built a sensor-based system that measures and monitors air pollution in real-time.
+            The system includes a live data visualization dashboard and email alert notifications to keep users informed.
+            It combines embedded systems, Java, and cloud integration.
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=60" alt="Email Reply Generator" />
+          <div class="project-title">Email Reply Generator</div>
+          <div class="project-desc">
+            This project automatically generates personalized email replies by analyzing incoming messages.
+            It uses natural language processing to speed up email responses and improve productivity.
+            A handy tool for professionals drowning in emails.
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="Images\Screenshot 2025-05-03 202345.png" alt="Ping Pong Game" />
+          <div class="project-title">Ping Pong Game with Stats</div>
+          <div class="project-desc">
+            A simple browser-based Ping Pong game featuring real-time user stats, including highest score tracking.
+            Developed to experiment with game mechanics, UI, and JavaScript performance.
+            Fun and challenging way to showcase interactive programming skills.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="page">
+      <h2>Skills</h2>
+      <div class="skills-container">
+        <div class="skill-col">
+          <h3>Learned</h3>
+          <ul class="skill-list">
+            <li>🟩 Java</li>
+            <li>🔄 REST APIs</li>
+            <li>🌱 Spring Boot</li>
+            <li>🗄️ SQL</li>
+            <li>🧩 Spring MVC</li>
+            <li>📊 Spring Data JPA</li>
+            <li>🐬 MySQL</li>
+            <li>🐘 PostgreSQL</li>
+            <li>☕ Hibernate</li>
+          </ul>
+        </div>
+        <div class="skill-col">
+          <h3>Will Learn</h3>
+          <ul class="skill-list">
+            <li>🌐 HTML</li>
+            <li>🎨 CSS</li>
+            <li>⚡ JavaScript</li>
+            <li>🔷 TypeScript</li>
+            <li>🟢 Node.js</li>
+            <li>⚛️ React</li>
+            <li>🐳 Docker</li>
+            <li>☸️ Kubernetes</li>
+            <li>⚙️ Jenkins</li>
+            <li>🐚 Bash Scripting</li>
+            <li>🗃️ Apache Cassandra</li>
+            <li>📡 gRPC (Java)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="profiles" class="page">
+      <h2>Profiles</h2>
+      <div class="profiles-links">
+        <a class="profiles-button" href="https://leetcode.com/u/Utej_Avulla/" target="_blank" rel="noopener">
+  <i class="fas fa-code"></i> <span>&lt;/&gt;</span> LeetCode
+</a>
+
+        <a class="profiles-button" href="https://github.com/utej8553" target="_blank" rel="noopener">
+          <i class="fab fa-github"></i> GitHub
+        </a>
+        <a class="profiles-button" href="https://monkeytype.com/profile/UtejAvulla" target="_blank" rel="noopener">
+          <i class="fas fa-keyboard"></i> Monkeytype
+        </a>
+        <a class="profiles-button" href="https://www.linkedin.com/in/utejavulla21631/" target="_blank" rel="noopener">
+          <i class="fab fa-linkedin"></i> LinkedIn
+        </a>
+      </div>
+    </section>
+
+    <section id="contact" class="page">
+      <h2>Contact</h2>
+      <p>Email me at <a href="mailto:utej21631@gmail.com">utej21631@gmail.com</a></p>
+    </section>
+  </main>
+
+  <script>
+  // Set dark mode by default
+  document.body.classList.add('dark');
+
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach((page) => {
+      page.classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+  }
+</script>
+
+</body>
+</html>
